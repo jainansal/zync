@@ -14,9 +14,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
 import { useOrigin } from "@/hooks/use-origin";
+import { generateNewLink } from "@/services/server";
 
 const InviteModal = () => {
-  const { isOpen, type, onClose, data } = useModal();
+  const { onOpen, isOpen, type, onClose, data } = useModal();
   const origin = useOrigin();
 
   const [copied, setCopied] = useState(false);
@@ -33,6 +34,18 @@ const InviteModal = () => {
     setTimeout(() => setCopied(false), 1500);
   };
 
+  const onNew = async () => {
+    try {
+      setIsLoading(true);
+      const response = await generateNewLink(server?.id);
+      onOpen("invite", { server: response.data });
+    } catch (error) {
+      console.error("Error while generating new link", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
       <DialogContent className="bg-white text-black p-0 overflow-hidden">
@@ -47,10 +60,11 @@ const InviteModal = () => {
           </Label>
           <div className="flex items-center mt-2 gap-x-2">
             <Input
+              disabled={isLoading}
               className="bg-zinc-300/50 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-black"
               value={inviteLink}
             />
-            <Button size="icon" onClick={onCopy}>
+            <Button disabled={isLoading} size="icon" onClick={onCopy}>
               {copied ? (
                 <Check className="w-4 h-4" />
               ) : (
@@ -59,6 +73,8 @@ const InviteModal = () => {
             </Button>
           </div>
           <Button
+            onClick={onNew}
+            disabled={isLoading}
             variant="link"
             size="sm"
             className="text-xs text-zinc-400 mt-2"
