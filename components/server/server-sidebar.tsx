@@ -3,6 +3,7 @@ import { ChannelType } from "@prisma/client";
 
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
+import ServerHeader from "./server-header";
 
 interface ServerSidebarProps {
   serverId: string;
@@ -59,7 +60,7 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
 
   return (
     <div className="flex flex-col w-full h-full text-primary dark:bg-[#2b2d31] bg-[#f2f3f5]">
-      Server Sidebar
+      <ServerHeader server={server} role={role} />
     </div>
   );
 };
