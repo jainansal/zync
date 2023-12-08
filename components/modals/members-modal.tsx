@@ -12,6 +12,7 @@ import {
   User,
 } from "lucide-react";
 import { MemberRole } from "@prisma/client";
+import { useRouter } from "next/navigation";
 
 import {
   Dialog,
@@ -50,6 +51,7 @@ const roleIconMap: RoleIconMap = {
 const MembersModal = () => {
   const { onOpen, isOpen, type, onClose, data } = useModal();
   const [loadingId, setLoadingId] = useState("");
+  const router = useRouter();
 
   const isModalOpen = isOpen && type === "members";
   const { server } = data as { server: ServerWithMembersWithProfiles };
@@ -63,7 +65,13 @@ const MembersModal = () => {
       )[0].role;
 
       if (currentRole !== role) {
-        await updateMemberRole(server.id, { memberId, role });
+        const response = await updateMemberRole(memberId, {
+          serverId: server.id,
+          role,
+        });
+
+        router.refresh();
+        onOpen("members", { server: response.data });
       }
     } catch (err) {
       console.log(err);

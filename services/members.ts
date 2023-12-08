@@ -1,11 +1,12 @@
 import axios from "axios";
 import { MemberRole } from "@prisma/client";
 
-interface MemberIdAndRole {
-  memberId: string,
+interface ServerIdAndRole {
+  serverId: string,
   role: MemberRole
 }
 
-export const updateMemberRole = async (serverId: string | undefined, values: MemberIdAndRole) => {
-  await axios.patch(`/api/servers/${serverId}/update-role`, values);
+export const updateMemberRole = async (memberId: string | undefined, values: ServerIdAndRole) => {
+  const response = await axios.patch(`/api/members/${memberId}/role`, values);
+  return response
 }
