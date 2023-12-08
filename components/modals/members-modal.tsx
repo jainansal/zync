@@ -36,7 +36,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { updateMemberRole } from "@/services/members";
+import { kickMember, updateMemberRole } from "@/services/members";
 
 type RoleIconMap = {
   [key in MemberRole]: React.ReactNode;
@@ -73,6 +73,21 @@ const MembersModal = () => {
         router.refresh();
         onOpen("members", { server: response.data });
       }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoadingId("");
+    }
+  };
+
+  const handleKick = async (memberId: string) => {
+    try {
+      setLoadingId(memberId);
+
+      const response = await kickMember(memberId, { serverId: server.id });
+
+      router.refresh();
+      onOpen("members", { server: response.data });
     } catch (err) {
       console.log(err);
     } finally {
@@ -143,7 +158,7 @@ const MembersModal = () => {
                           </DropdownMenuPortal>
                         </DropdownMenuSub>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleKick(member.id)}>
                           <Gavel className="w-4 h-4 mr-1" />
                           Kick
                         </DropdownMenuItem>
