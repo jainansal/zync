@@ -21,7 +21,8 @@ export async function PATCH(
 
     const server = await db.server.update({
       where: {
-        id: params.serverId
+        id: params.serverId,
+        profileId: profile.id
       },
       data: {
         name,
@@ -31,7 +32,7 @@ export async function PATCH(
 
     return NextResponse.json(server);
   } catch (error) {
-    console.log("[SERVERS_PATCH]", error);
+    console.log("[SERVER_ID_PATCH]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
