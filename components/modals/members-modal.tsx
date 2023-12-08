@@ -2,12 +2,16 @@
 
 import { useState } from "react";
 import {
+  Check,
   Crown,
+  Gavel,
+  Loader2,
   MoreVertical,
   Shield,
   ShieldQuestion,
   User,
 } from "lucide-react";
+import { MemberRole } from "@prisma/client";
 
 import {
   Dialog,
@@ -20,14 +24,18 @@ import { useModal } from "@/hooks/use-modal-store";
 import { ServerWithMembersWithProfiles } from "@/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import UserAvatar from "@/components/user-avatar";
-import { MemberRole } from "@prisma/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
   DropdownMenuSub,
+  DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
+import { updateMemberRole } from "@/services/members";
 
 type RoleIconMap = {
   [key in MemberRole]: React.ReactNode;
@@ -45,6 +53,24 @@ const MembersModal = () => {
 
   const isModalOpen = isOpen && type === "members";
   const { server } = data as { server: ServerWithMembersWithProfiles };
+
+  const handleRoleChange = async (memberId: string, role: MemberRole) => {
+    try {
+      setLoadingId(memberId);
+
+      const currentRole = server.members.filter(
+        (member) => member.id === memberId
+      )[0].role;
+
+      if (currentRole !== role) {
+        await updateMemberRole(server.id, { memberId, role });
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoadingId("");
+    }
+  };
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
@@ -69,7 +95,7 @@ const MembersModal = () => {
                 <p className="text-xs text-zinc-500">{member.profile.email}</p>
               </div>
               {server.profileId !== member.profileId &&
-                member.profileId !== loadingId && (
+                member.id !== loadingId && (
                   <div className="ml-auto">
                     <DropdownMenu>
                       <DropdownMenuTrigger>
@@ -81,11 +107,45 @@ const MembersModal = () => {
                             <ShieldQuestion className="w-4 h-4" />
                             Role
                           </DropdownMenuSubTrigger>
+                          <DropdownMenuPortal>
+                            <DropdownMenuSubContent>
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  handleRoleChange(member.id, "GUEST")
+                                }
+                              >
+                                <User className="h-4 w-4 mr-1" />
+                                Guest
+                                {member.role === "GUEST" && (
+                                  <Check className="h-4 w-4 ml-auto" />
+                                )}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  handleRoleChange(member.id, "MODERATOR")
+                                }
+                              >
+                                <Shield className="h-4 w-4 mr-1 text-indigo-500" />
+                                Moderator
+                                {member.role === "MODERATOR" && (
+                                  <Check className="h-4 w-4 ml-auto" />
+                                )}
+                              </DropdownMenuItem>
+                            </DropdownMenuSubContent>
+                          </DropdownMenuPortal>
                         </DropdownMenuSub>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                          <Gavel className="w-4 h-4 mr-1" />
+                          Kick
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
                 )}
+              {loadingId === member.id && (
+                <Loader2 className="animate-spin ml-auto h-4 w-4 text-zinc-500" />
+              )}
             </div>
           ))}
         </ScrollArea>
