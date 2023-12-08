@@ -1,5 +1,14 @@
 "use client";
 
+import { useState } from "react";
+import {
+  Crown,
+  MoreVertical,
+  Shield,
+  ShieldQuestion,
+  User,
+} from "lucide-react";
+
 import {
   Dialog,
   DialogContent,
@@ -12,20 +21,27 @@ import { ServerWithMembersWithProfiles } from "@/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import UserAvatar from "@/components/user-avatar";
 import { MemberRole } from "@prisma/client";
-import { ShieldAlert, ShieldCheck } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 type RoleIconMap = {
   [key in MemberRole]: React.ReactNode;
 };
 
 const roleIconMap: RoleIconMap = {
-  GUEST: null,
-  MODERATOR: <ShieldCheck className="w-4 h-4 text-indigo-500" />,
-  ADMIN: <ShieldAlert className="w-4 h-4 text-rose-500" />,
+  GUEST: <User className="h-4 w-4 text-zinc-500" />,
+  MODERATOR: <Shield className="w-4 h-4 text-indigo-500" />,
+  ADMIN: <Crown className="w-4 h-4 text-yellow-700" />,
 };
 
 const MembersModal = () => {
   const { onOpen, isOpen, type, onClose, data } = useModal();
+  const [loadingId, setLoadingId] = useState("");
 
   const isModalOpen = isOpen && type === "members";
   const { server } = data as { server: ServerWithMembersWithProfiles };
@@ -50,7 +66,26 @@ const MembersModal = () => {
                   {member.profile.name}
                   {roleIconMap[member.role]}
                 </div>
+                <p className="text-xs text-zinc-500">{member.profile.email}</p>
               </div>
+              {server.profileId !== member.profileId &&
+                member.profileId !== loadingId && (
+                  <div className="ml-auto">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger>
+                        <MoreVertical className="h-4 w-4 text-zinc-500" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent side="left">
+                        <DropdownMenuSub>
+                          <DropdownMenuSubTrigger className="flex items-center gap-1">
+                            <ShieldQuestion className="w-4 h-4" />
+                            Role
+                          </DropdownMenuSubTrigger>
+                        </DropdownMenuSub>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                )}
             </div>
           ))}
         </ScrollArea>
