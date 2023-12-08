@@ -3,6 +3,7 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -25,7 +26,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import FileUpload from "@/components/file-upload";
 import { useModal } from "@/hooks/use-modal-store";
-import { createServer } from "@/services/server";
+import { editServer } from "@/services/server";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -36,11 +37,12 @@ const formSchema = z.object({
   }),
 });
 
-const CreateServerModal = () => {
-  const { isOpen, type, onClose } = useModal();
+const EditServerModal = () => {
+  const { isOpen, type, onClose, data } = useModal();
   const router = useRouter();
 
-  const isModalOpen = isOpen && type === "createServer";
+  const isModalOpen = isOpen && type === "editServer";
+  const { server } = data;
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -50,17 +52,23 @@ const CreateServerModal = () => {
     },
   });
 
+  useEffect(() => {
+    if (server) {
+      form.setValue("name", server.name);
+      form.setValue("imageUrl", server.imageUrl);
+    }
+  }, [server, form]);
+
   const isLoading = form.formState.isSubmitting;
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await createServer(values);
+      await editServer(server?.id, values);
 
-      form.reset();
       router.refresh();
       onClose();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -127,7 +135,7 @@ const CreateServerModal = () => {
             </div>
             <DialogFooter className="bg-gray-100 px-6 py-4">
               <Button disabled={isLoading} variant="primary">
-                Create
+                Save
               </Button>
             </DialogFooter>
           </form>
@@ -137,4 +145,4 @@ const CreateServerModal = () => {
   );
 };
 
-export default CreateServerModal;
+export default EditServerModal;
