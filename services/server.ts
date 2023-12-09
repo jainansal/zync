@@ -21,3 +21,7 @@ export const createServer = async (values: ServerNameAndImage) => {
 export const leaveServer = async (serverId: string | undefined) => {
   await axios.patch(`/api/servers/${serverId}/leave`);
 }
+
+export const deleteServer = async (serverId: string | undefined) => {
+  await axios.delete(`/api/servers/${serverId}`);
+}
