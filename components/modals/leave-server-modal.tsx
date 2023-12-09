@@ -63,7 +63,7 @@ const LeaveServerModal = () => {
             <Button
               disabled={isLoading}
               onClick={handleLeaveServer}
-              variant={"primary"}
+              variant={"destructive"}
             >
               Leave
             </Button>

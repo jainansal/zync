@@ -48,11 +48,11 @@ const DeleteServerModal = () => {
             Delete Server
           </DialogTitle>
           <DialogDescription className="text-center text-zinc-500">
-            Are you sure you want to delete your server{" "}
+            Are you sure you want to do this? <br />
             <span className="font-semibold text-indigo-500">
               {server?.name}
-            </span>
-            ?
+            </span>{" "}
+            will be permanently deleted.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="bg-gray-100 px-6 py-4">
@@ -63,7 +63,7 @@ const DeleteServerModal = () => {
             <Button
               disabled={isLoading}
               onClick={handleDeleteServer}
-              variant={"primary"}
+              variant={"destructive"}
             >
               Delete
             </Button>
