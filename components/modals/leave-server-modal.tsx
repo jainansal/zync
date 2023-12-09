@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import {
   Dialog,
@@ -11,15 +12,33 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useModal } from "@/hooks/use-modal-store";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
+import { leaveServer } from "@/services/server";
 
 const LeaveServerModal = () => {
   const { isOpen, type, onClose, data } = useModal();
+  const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
   const { server } = data;
 
   const isModalOpen = isOpen && type === "leaveServer";
+
+  const handleLeaveServer = async () => {
+    try {
+      setIsLoading(true);
+
+      await leaveServer(server?.id);
+
+      onClose();
+      router.refresh();
+      router.push("/");
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
@@ -41,7 +60,11 @@ const LeaveServerModal = () => {
             <Button disabled={isLoading} onClick={onClose} variant={"ghost"}>
               Cancel
             </Button>
-            <Button disabled={isLoading} onClick={() => {}} variant={"primary"}>
+            <Button
+              disabled={isLoading}
+              onClick={handleLeaveServer}
+              variant={"primary"}
+            >
               Leave
             </Button>
           </div>

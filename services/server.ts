@@ -17,3 +17,7 @@ export const editServer = async (serverId: string | undefined, values: ServerNam
 export const createServer = async (values: ServerNameAndImage) => {
   await axios.post("/api/servers", values);
 }
+
+export const leaveServer = async (serverId: string | undefined) => {
+  await axios.patch(`/api/servers/${serverId}/leave`);
+}
