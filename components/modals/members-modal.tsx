@@ -3,7 +3,6 @@
 import { useState } from "react";
 import {
   Check,
-  Crown,
   Gavel,
   Loader2,
   MoreVertical,
@@ -37,16 +36,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { kickMember, updateMemberRole } from "@/services/members";
-
-type RoleIconMap = {
-  [key in MemberRole]: React.ReactNode;
-};
-
-const roleIconMap: RoleIconMap = {
-  GUEST: <User className="h-4 w-4 text-zinc-500" />,
-  MODERATOR: <Shield className="w-4 h-4 text-indigo-500" />,
-  ADMIN: <Crown className="w-4 h-4 text-yellow-700" />,
-};
+import { roleIconMap } from "@/components/icon-maps";
 
 const MembersModal = () => {
   const { onOpen, isOpen, type, onClose, data } = useModal();
