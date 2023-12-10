@@ -9,3 +9,7 @@ interface ChannelNameAndType {
 export const createChannel = async (serverId: string[] | string | undefined, values: ChannelNameAndType) => {
   await axios.post(`/api/channels?serverId=${serverId}`, values);
 }
+
+export const deleteChannel = async (serverId: string | undefined, channelId: string | undefined) => {
+  await axios.delete(`/api/channels/${channelId}?serverId=${serverId}`);
+}
