@@ -1,6 +1,11 @@
-import React from "react";
+interface MemberIdPageProps {
+  params: {
+    serverId: string;
+    memberId: string;
+  };
+}
 
-const MemberIdPage = () => {
+const MemberIdPage = async ({ params }: MemberIdPageProps) => {
   return <div>MemberIdPage</div>;
 };
 
