@@ -1,7 +1,7 @@
 "use client";
 
 import { Member, Profile, Server } from "@prisma/client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import { roleIconMap } from "@/components/icon-maps";
 import { cn } from "@/lib/utils";
@@ -14,8 +14,13 @@ interface ServerMemberProps {
 
 const ServerMember = ({ member, server }: ServerMemberProps) => {
   const params = useParams();
+  const router = useRouter();
 
   const icon = roleIconMap[member.role];
+
+  const visitMember = () => {
+    router.push(`/servers/${server.id}/conversations/${member.id}`);
+  };
 
   return (
     <button
@@ -23,6 +28,7 @@ const ServerMember = ({ member, server }: ServerMemberProps) => {
         "flex group p-2 w-full gap-2 rounded-md items-center hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1",
         params?.memberId === member.id && "bg-zinc-700/20 dark:bg-zinc-700"
       )}
+      onClick={visitMember}
     >
       <UserAvatar
         src={member.profile.imageUrl}
