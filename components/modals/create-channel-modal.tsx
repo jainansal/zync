@@ -74,7 +74,7 @@ const CreateChannelModal = () => {
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await createChannel(params.serverId, values);
+      await createChannel(params?.serverId, values);
 
       form.reset();
       router.refresh();
