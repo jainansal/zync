@@ -10,7 +10,7 @@ type ChannelIconMap = {
 };
 
 export const roleIconMap: RoleIconMap = {
-  GUEST: <User className="h-4 w-4 text-zinc-500" />,
+  GUEST: null,
   MODERATOR: <Shield className="w-4 h-4 text-indigo-500" />,
   ADMIN: <Crown className="w-4 h-4 text-yellow-700" />,
 };
