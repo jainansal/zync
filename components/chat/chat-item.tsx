@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { editMessage } from "@/services/chat";
 import { useModal } from "@/hooks/use-modal-store";
+import { useParams, useRouter } from "next/navigation";
 
 interface ChatItemProps {
   id: string;
@@ -51,7 +52,8 @@ const ChatItem = ({
 }: ChatItemProps) => {
   const { onOpen } = useModal();
   const [isEditing, setIsEditing] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
+  const params = useParams();
 
   const fileType = fileUrl?.split(".").pop();
 
@@ -102,10 +104,19 @@ const ChatItem = ({
     }
   };
 
+  const visitProfile = () => {
+    if (currentMember.id !== member.id) {
+      router.push(`/servers/${params?.serverId}/conversations/${member.id}`);
+    }
+  };
+
   return (
     <div className="relative group flex items-center hover:bg-black/5 p-4 transition w-full">
       <div className="group flex gap-x-2 items-start w-full">
-        <div className="cursor-pointer hover:drop-shadow-md transition">
+        <div
+          className="cursor-pointer hover:drop-shadow-md transition"
+          onClick={visitProfile}
+        >
           <UserAvatar
             src={member.profile.imageUrl}
             className="h-6 w-6 md:h-6 md:w-6"
@@ -114,7 +125,10 @@ const ChatItem = ({
         <div className="flex flex-col w-full">
           <div className="flex items-center gap-x-2">
             <div className="flex items-center">
-              <p className="font-semibold text-xs cursor-pointer hover:underline">
+              <p
+                className="font-semibold text-xs cursor-pointer hover:underline"
+                onClick={visitProfile}
+              >
                 {member.profile.name}
               </p>
               <ActionTooltip label={member.role}>
@@ -203,7 +217,7 @@ const ChatItem = ({
           )}
         </div>
       </div>
-      {canDeleteMessage && !isEditing && !isDeleting && (
+      {canDeleteMessage && !isEditing && (
         <div className="hidden group-hover:flex items-center gap-x-2 absolute p-1 -top-2 right-5 bg-white dark:bg-zinc-800 border rounded-sm">
           {canEditMessage && (
             <ActionTooltip label={"Edit"}>
