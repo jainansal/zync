@@ -21,3 +21,19 @@ export const sendFile = async (apiUrl: string | undefined, query: Record<string,
     content: values.fileUrl
   })
 }
+
+export const editMessage = async (socketUrl: string, socketQuery: Record<string, string>, values: { content: string }) => {
+  const url = qs.stringifyUrl({
+    url: socketUrl,
+    query: socketQuery
+  })
+  await axios.patch(url, values);
+}
+
+export const deleteMessage = async (socketUrl: string, socketQuery: Record<string, string> | undefined) => {
+  const url = qs.stringifyUrl({
+    url: socketUrl,
+    query: socketQuery
+  })
+  await axios.delete(url);
+}
