@@ -37,7 +37,12 @@ const ChannelIdPage = async ({ params }: ChannelIdPageProps) => {
     },
   });
 
-  if (!channel || !member) return redirect("/");
+  if (
+    !channel ||
+    !member ||
+    (channel.permissions === "MODERATOR" && member.role === "GUEST")
+  )
+    return redirect("/");
 
   return (
     <div className="bg-white dark:bg-[#313338] flex flex-col h-full">

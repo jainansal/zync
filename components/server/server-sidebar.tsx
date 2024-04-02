@@ -45,6 +45,10 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
     },
   });
 
+  if (!server) {
+    return redirect("/");
+  }
+
   const textChannels = server?.channels.filter(
     (channel) => channel.type === ChannelType.TEXT
   );
@@ -57,10 +61,6 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
   const members = server?.members.filter(
     (member) => member.profileId !== profile.id
   );
-
-  if (!server) {
-    return redirect("/");
-  }
 
   const role = server?.members.find(
     (member) => member.profileId === profile.id

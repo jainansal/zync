@@ -5,7 +5,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useParams, useRouter } from "next/navigation";
-import { ChannelType } from "@prisma/client";
+import { ChannelType, MemberRole } from "@prisma/client";
 
 import {
   Dialog,
@@ -44,6 +44,7 @@ const formSchema = z.object({
       message: "Channel name can't be 'general'",
     }),
   type: z.nativeEnum(ChannelType),
+  permissions: z.nativeEnum(MemberRole),
 });
 
 const CreateChannelModal = () => {
@@ -59,6 +60,7 @@ const CreateChannelModal = () => {
     defaultValues: {
       name: "",
       type: channelType || ChannelType.TEXT,
+      permissions: MemberRole.GUEST,
     },
   });
 
@@ -151,6 +153,44 @@ const CreateChannelModal = () => {
                             {type.toLowerCase()}
                           </SelectItem>
                         ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="permissions"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
+                      Permissions
+                    </FormLabel>
+                    <Select
+                      disabled={isLoading}
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none">
+                          <SelectValue placeholder="Select a channel type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem
+                          key="GUEST"
+                          value="GUEST"
+                          className="capitalize"
+                        >
+                          Access to all
+                        </SelectItem>
+                        <SelectItem
+                          key="MODERATOR"
+                          value="MODERATOR"
+                          className="capitalize"
+                        >
+                          Moderators only
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </FormItem>

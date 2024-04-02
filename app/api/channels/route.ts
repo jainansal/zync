@@ -4,9 +4,7 @@ import { MemberRole } from "@prisma/client";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 
-export async function POST(
-  req: Request
-) {
+export async function POST(req: Request) {
   try {
     const profile = await currentProfile();
 
@@ -21,9 +19,9 @@ export async function POST(
       return new Response("Server ID missing", { status: 400 });
     }
 
-    const { name, type } = await req.json();
+    const { name, type, permissions } = await req.json();
 
-    if (!name || !type) {
+    if (!name || !type || !permissions) {
       return new Response("Missing data", { status: 400 });
     }
 
@@ -34,10 +32,10 @@ export async function POST(
           some: {
             profileId: profile.id,
             role: {
-              in: [MemberRole.ADMIN, MemberRole.MODERATOR]
-            }
-          }
-        }
+              in: [MemberRole.ADMIN, MemberRole.MODERATOR],
+            },
+          },
+        },
       },
       data: {
         channels: {
@@ -45,12 +43,13 @@ export async function POST(
             {
               profileId: profile.id,
               name,
-              type
-            }
-          ]
-        }
-      }
-    })
+              type,
+              permissions,
+            },
+          ],
+        },
+      },
+    });
 
     return NextResponse.json(server);
   } catch (error) {

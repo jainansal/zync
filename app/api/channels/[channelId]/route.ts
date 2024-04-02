@@ -28,7 +28,7 @@ export async function DELETE(
       where: {
         id: params.channelId,
         name: {
-          not: "general"
+          not: "general",
         },
         server: {
           id: serverId,
@@ -36,13 +36,13 @@ export async function DELETE(
             some: {
               profileId: profile.id,
               role: {
-                in: [MemberRole.ADMIN, MemberRole.MODERATOR]
-              }
-            }
-          }
-        }
-      }
-    })
+                in: [MemberRole.ADMIN, MemberRole.MODERATOR],
+              },
+            },
+          },
+        },
+      },
+    });
 
     return new Response("Channel deleted successfully", { status: 200 });
   } catch (err) {
@@ -72,9 +72,9 @@ export async function PATCH(
       return new Response("Server ID missing", { status: 400 });
     }
 
-    const { name, type } = await req.json();
+    const { name, type, permissions } = await req.json();
 
-    if (!name || !type) {
+    if (!name || !type || !permissions) {
       return new Response("Data missing", { status: 400 });
     }
 
@@ -82,7 +82,7 @@ export async function PATCH(
       where: {
         id: params.channelId,
         name: {
-          not: "general"
+          not: "general",
         },
         server: {
           id: serverId,
@@ -90,17 +90,18 @@ export async function PATCH(
             some: {
               profileId: profile.id,
               role: {
-                in: [MemberRole.ADMIN, MemberRole.MODERATOR]
-              }
-            }
-          }
-        }
+                in: [MemberRole.ADMIN, MemberRole.MODERATOR],
+              },
+            },
+          },
+        },
       },
       data: {
         name,
-        type
-      }
-    })
+        type,
+        permissions,
+      },
+    });
 
     return NextResponse.json(channel);
   } catch (err) {

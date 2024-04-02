@@ -19,11 +19,20 @@ const ServerChannel = ({ channel, server, role }: ServerChannelProps) => {
   const { onOpen } = useModal();
   const router = useRouter();
   const params = useParams();
+  const channelLocked = channel.permissions === "MODERATOR" && role === "GUEST";
 
-  const Icon = channelIconMap[channel.type];
+  const Icon = channelLocked ? (
+    <Lock className="h-4 w-4" />
+  ) : (
+    channelIconMap[channel.type]
+  );
 
   const visitChannel = () => {
-    router.push(`/servers/${server.id}/channels/${channel.id}`);
+    if (!channelLocked) {
+      router.push(`/servers/${server.id}/channels/${channel.id}`);
+    } else {
+      onOpen("permissionDenied");
+    }
   };
 
   const onAction = (e: React.MouseEvent, action: ModalType) => {
