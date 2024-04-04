@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { channelIconMap } from "@/components/icon-maps";
 import ActionTooltip from "@/components/action-tooltip";
 import { ModalType, useModal } from "@/hooks/use-modal-store";
+import ModBadge from "../mod-badge";
 
 interface ServerChannelProps {
   channel: Channel;
@@ -51,12 +52,13 @@ const ServerChannel = ({ channel, server, role }: ServerChannelProps) => {
       {Icon}
       <p
         className={cn(
-          "line-clamp-1 font-semibold text-sm",
+          "line-clamp-1 font-semibold text-sm flex gap-2 items-center",
           params?.channelId === channel.id &&
             "text-primary dark:text-zinc-200 dark:group-hover:text-white"
         )}
       >
         {channel.name}
+        {channel.permissions === "MODERATOR" && <ModBadge />}
       </p>
       {channel.name !== "general" && role !== MemberRole.GUEST && (
         <div className="ml-auto flex items-center gap-2">
