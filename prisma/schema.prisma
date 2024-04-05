@@ -29,6 +29,8 @@ model Server {
   imageUrl   String
   inviteCode String @unique
 
+  tags ServerTag[]
+
   members  Member[]
   channels Channel[]
 
@@ -148,4 +150,26 @@ model DirectMessage {
 
   @@index([memberId])
   @@index([conversationId])
+}
+
+model Tag {
+  id    String @id @default(uuid()) @map("_id")
+  color String @unique
+  name  String @unique
+
+  servers ServerTag[]
+}
+
+model ServerTag {
+  id String @id @default(uuid()) @map("_id")
+
+  tagId String
+  tag   Tag    @relation(references: [id], fields: [tagId], onDelete: Cascade)
+
+  serverId String
+  server   Server @relation(references: [id], fields: [serverId], onDelete: Cascade)
+
+  @@unique([serverId, tagId])
+  @@index([serverId])
+  @@index([tagId])
 }

@@ -12,6 +12,7 @@ import ServerSearch from "./server-search";
 import ServerSection from "./server-section";
 import ServerChannel from "./server-channel";
 import ServerMember from "./server-member";
+import ServerTags from "./server-tags";
 
 interface ServerSidebarProps {
   serverId: string;
@@ -42,6 +43,11 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
           role: "asc",
         },
       },
+      tags: {
+        select: {
+          tag: true,
+        },
+      },
     },
   });
 
@@ -61,6 +67,7 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
   const members = server?.members.filter(
     (member) => member.profileId !== profile.id
   );
+  const tags = server?.tags;
 
   const role = server?.members.find(
     (member) => member.profileId === profile.id
@@ -113,6 +120,7 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
           />
         </div>
         <Separator className="bg-zinc-200 dark:bg-zinc-700 rounded-md my-2" />
+        <ServerTags role={role} tags={tags} />
         {!!textChannels?.length && (
           <div className="mb-2">
             <ServerSection
