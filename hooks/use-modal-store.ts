@@ -13,7 +13,8 @@ export type ModalType =
   | "editChannel"
   | "messageFile"
   | "deleteMessage"
-  | "permissionDenied";
+  | "permissionDenied"
+  | "editServerTags";
 
 interface ModalData {
   server?: Server;

@@ -1,7 +1,7 @@
 "use client";
 
 import { ChannelType, MemberRole } from "@prisma/client";
-import { Plus, Settings } from "lucide-react";
+import { Pencil, Plus, Settings } from "lucide-react";
 
 import { ServerWithMembersWithProfiles } from "@/types";
 import ActionTooltip from "@/components/action-tooltip";
@@ -9,7 +9,7 @@ import { useModal } from "@/hooks/use-modal-store";
 
 interface ServerSectionProps {
   label: string;
-  sectionType: "channels" | "members";
+  sectionType: "channels" | "members" | "tags";
   role?: MemberRole;
   channelType?: ChannelType;
   server?: ServerWithMembersWithProfiles;
@@ -36,6 +36,16 @@ const ServerSection = ({
             onClick={() => onOpen("createChannel", { channelType })}
           >
             <Plus className="h-4 w-4" />
+          </button>
+        </ActionTooltip>
+      )}
+      {role !== MemberRole.GUEST && sectionType === "tags" && (
+        <ActionTooltip label={"Edit tags"} side="top">
+          <button
+            className="text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 transition"
+            onClick={() => onOpen("editServerTags", { server })}
+          >
+            <Pencil className="h-4 w-4" />
           </button>
         </ActionTooltip>
       )}
