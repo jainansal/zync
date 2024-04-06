@@ -18,7 +18,11 @@ const ServerTags = ({ tags, className }: ServerTagsProps) => {
       {tags?.length ? (
         <>
           {tags?.map((tag) => (
-            <ServerTag name={tag.tag.name} color={tag.tag.color} />
+            <ServerTag
+              key={tag.tag.id}
+              name={tag.tag.name}
+              color={tag.tag.color}
+            />
           ))}
         </>
       ) : (
