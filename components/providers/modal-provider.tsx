@@ -14,7 +14,7 @@ import EditChannelModal from "@/components/modals/edit-channel-modal";
 import MessageFileModal from "@/components/modals/message-file-modal";
 import DeleteMessageModal from "@/components/modals/delete-message-modal";
 import PermissionDeniedModal from "../modals/permission-denied-modal";
-import EditServerTagsModal from "../modals/edit-server-tags";
+import EditServerTagsModal from "../modals/edit-server-tags-modal";
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);

@@ -12,6 +12,7 @@ import ServerSearch from "./server-search";
 import ServerSection from "./server-section";
 import ServerChannel from "./server-channel";
 import ServerMember from "./server-member";
+import ServerTags from "./server-tags";
 
 interface ServerSidebarProps {
   serverId: string;
@@ -126,21 +127,7 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
             role={role}
             server={server}
           />
-          <div className="max-h-[100px] w-100 flex gap-2 overflow-y-auto flex-wrap bg-zinc-800 rounded-md p-2">
-            {tags?.length ? (
-              <>
-                {tags?.map((tag) => (
-                  <div className="rounded-xl py-1 px-2 text-sm">
-                    {tag.tag.name}
-                  </div>
-                ))}
-              </>
-            ) : (
-              <div className="text-muted-foreground text-sm m-auto">
-                No tags yet
-              </div>
-            )}
-          </div>
+          <ServerTags tags={tags} />
         </div>
         {!!textChannels?.length && (
           <div className="mb-2">
