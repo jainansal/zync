@@ -19,7 +19,6 @@ import ServerTags from "../server/server-tags";
 
 const EditServerTagsModal = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [newTag, setNewTag] = useState("");
   const { onOpen, isOpen, type, onClose, data } = useModal();
   const router = useRouter();
 
@@ -28,11 +27,14 @@ const EditServerTagsModal = () => {
 
   const searchTags = debounce(async (tag: string) => {
     if (!tag) {
-      return Promise.resolve({ data: [] });
+      return [];
     }
     const response = await axios.get(`/api/tags?name=${tag}`);
     const tags = response.data.tags;
-    return tags;
+    if (tags.length) {
+      return tags;
+    }
+    return [{ value: tag, label: tag }];
   }, 1000);
 
   // const handleSubmitNewTag = async () => {
@@ -78,7 +80,12 @@ const EditServerTagsModal = () => {
             Tags give a vibe to your server. <br /> Be creative with them.
           </DialogDescription>
         </DialogHeader>
-        <AsyncSelect cacheOptions loadOptions={searchTags} defaultOptions />
+        <AsyncSelect
+          cacheOptions
+          loadOptions={searchTags}
+          defaultOptions
+          isDisabled={isLoading}
+        />
         <ServerTags tags={server?.tags} className="bg-zinc-300" />
       </DialogContent>
     </Dialog>
