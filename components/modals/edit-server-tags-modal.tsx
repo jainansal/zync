@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import AsyncSelect from "react-select/async";
 import debounce from "debounce-promise";
 import axios from "axios";
+import { Tag } from "@prisma/client";
 
 import {
   Dialog,
@@ -31,12 +32,25 @@ const EditServerTagsModal = () => {
     if (!tag) {
       return [];
     }
-    const response = await axios.get(`/api/tags?name=${tag}`);
-    const tags = response.data.tags;
-    if (tags.length) {
-      return tags;
+    const searchableTag = tag.trim().toLowerCase().replaceAll(" ", "-");
+    const response = await axios.get(`/api/tags?name=${searchableTag}`);
+    const tags = response.data.tags.map((tag: Tag) => {
+      return {
+        value: tag.name,
+        label: tag.name,
+      };
+    });
+    if (
+      tags.length < 5 &&
+      !tags.includes(searchableTag) &&
+      searchableTag.length >= 3
+    ) {
+      tags.push({
+        value: searchableTag,
+        label: searchableTag,
+      });
     }
-    return [{ value: tag, label: tag }];
+    return tags;
   }, 1000);
 
   const handleSubmitTag = async (selectedTag: unknown) => {
@@ -96,7 +110,7 @@ const EditServerTagsModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-white text-black overflow-hidden">
+      <DialogContent className="bg-white text-black">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
             Edit Tags

@@ -154,8 +154,8 @@ model DirectMessage {
 
 model Tag {
   id    String @id @default(uuid()) @map("_id")
-  color String @unique
   name  String @unique
+  color String
 
   servers ServerTag[]
 }

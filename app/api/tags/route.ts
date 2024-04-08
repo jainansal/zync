@@ -3,6 +3,7 @@ import { MemberRole } from "@prisma/client";
 
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
+import { generateRandomColor } from "@/lib/utils";
 
 export async function GET(req: Request) {
   try {
@@ -66,7 +67,7 @@ export async function POST(req: Request) {
       },
       create: {
         name,
-        color: "green",
+        color: generateRandomColor(),
       },
       update: {},
     });
