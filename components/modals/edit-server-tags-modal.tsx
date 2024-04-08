@@ -16,11 +16,13 @@ import {
 import { useModal } from "@/hooks/use-modal-store";
 import { ServerWithTags } from "@/types";
 import ServerTags from "../server/server-tags";
+import { useToast } from "../ui/use-toast";
 
 const EditServerTagsModal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { onOpen, isOpen, type, onClose, data } = useModal();
   const router = useRouter();
+  const { toast } = useToast();
 
   const isModalOpen = isOpen && type === "editServerTags";
   const { server } = data as { server: ServerWithTags };
@@ -36,6 +38,29 @@ const EditServerTagsModal = () => {
     }
     return [{ value: tag, label: tag }];
   }, 1000);
+
+  const handleSubmitTag = async (selectedTag: unknown) => {
+    try {
+      setIsLoading(true);
+      const tag = selectedTag as { value: string; label: string };
+      const response = await axios.post(
+        `/api/tags?serverId=${server.id}&name=${tag.value}`
+      );
+      router.refresh();
+      onOpen("editServerTags", { server: response.data.server });
+      toast({
+        description: "Tags successfully updated.",
+      });
+    } catch (err) {
+      console.log(err);
+      toast({
+        variant: "destructive",
+        description: "Something went wrong.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // const handleSubmitNewTag = async () => {
   //   try {
@@ -85,6 +110,7 @@ const EditServerTagsModal = () => {
           loadOptions={searchTags}
           defaultOptions
           isDisabled={isLoading}
+          onChange={handleSubmitTag}
         />
         <ServerTags tags={server?.tags} className="bg-zinc-300" />
       </DialogContent>
